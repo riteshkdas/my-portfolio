@@ -23,10 +23,15 @@ jobs:
           npm ci
           npm run build
 
+      # ==========================================
+      # 🚀 FIXED FOR WINDOWS POWERSHELL RUNNER
+      # ==========================================
       - name: 4. Tear Down Stale Container
         run: |
-          docker stop portfolio-app || true
-          docker rm portfolio-app || true
+          if (docker ps -a -q --filter "name=portfolio-app") {
+              docker stop portfolio-app
+              docker rm portfolio-app
+          }
 
       - name: 5. Compile Fresh Production Docker Image
         run: |
