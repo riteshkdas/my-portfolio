@@ -2,16 +2,13 @@ name: CI/CD Local Docker Pipeline
 
 on:
   push:
-    branches: [ "main" ] # Triggers automatically when you push to main
+    branches: [ "main" ]
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted # Forces the job to execute on your local laptop runner
+    runs-on: self-hosted
 
     steps:
-      # ==========================================
-      # 🛡️ STAGE 1: CONTINUOUS INTEGRATION (CI)
-      # ==========================================
       - name: 1. Checkout Repository Code
         uses: actions/checkout@v4
 
@@ -26,12 +23,8 @@ jobs:
           npm ci
           npm run build
 
-      # ==========================================
-      # 🚀 STAGE 2: CONTINUOUS DEPLOYMENT (CD)
-      # ==========================================
       - name: 4. Tear Down Stale Container
         run: |
-          # Stops and removes the container if it exists, continues safely if it doesn't
           docker stop portfolio-app || true
           docker rm portfolio-app || true
 
@@ -42,5 +35,3 @@ jobs:
       - name: 6. Launch Container in Docker Desktop
         run: |
           docker run -d --name portfolio-app -p 3000:3000 --restart always portfolio-prod:latest
-
-          
