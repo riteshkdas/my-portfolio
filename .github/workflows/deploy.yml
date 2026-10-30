@@ -22,17 +22,17 @@ jobs:
         run: |
           npm ci
           npm run build
-
+# NOTE: Changed 'docker' to '& "C:\Program Files\Docker\Docker\resources\bin\docker.exe"'
       - name: 4. Tear Down Stale Container
         run: |
           $ErrorActionPreference = "SilentlyContinue"
-          docker stop portfolio-app
-          docker rm portfolio-app
+          & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" stop portfolio-app
+          & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" rm portfolio-app
 
       - name: 5. Compile Fresh Production Docker Image
         run: |
-          docker build -t portfolio-prod:latest .
+          & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" build -t portfolio-prod:latest .
 
       - name: 6. Launch Container in Docker Desktop
         run: |
-          docker run -d --name portfolio-app -p 3000:3000 --restart always portfolio-prod:latest
+          & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" run -d --name portfolio-app -p 3000:3000 --restart always portfolio-prod:latest
