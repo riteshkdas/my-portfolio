@@ -38,11 +38,12 @@ jobs:
           }
           exit 0
 
-      # NOTE: Added -f src/Dockerfile to point to the correct subfolder
+      # FIXED: Changed build context context from "." to "src"
       - name: 5. Compile Fresh Production Docker Image
         run: |
-          docker build -f src/Dockerfile -t portfolio-prod:latest .
+          docker build -t portfolio-prod:latest ./src
 
+      # FIXED: Linked your build run directly to the compiled engine context
       - name: 6. Launch Container in Docker Desktop
         run: |
           docker run -d --name portfolio-app -p 3000:3000 --restart always portfolio-prod:latest
