@@ -38,10 +38,16 @@ jobs:
           }
           exit 0
 
-      # FIXED: Added the --ignore-file flag to use your .dockerignore from the src folder
+      # FIXED: Uses native PowerShell to temporarily handle the ignore file locally
       - name: 5. Compile Fresh Production Docker Image
         run: |
-          docker build --ignore-file src/.dockerignore -t portfolio-prod:latest .
+          if (Test-Path "src/.dockerignore") {
+              Copy-Item -Path "src/.dockerignore" -Destination ".\.dockerignore" -Force
+          }
+          docker build -t portfolio-prod:latest .
+          if (Test-Path ".\.dockerignore") {
+              Remove-Item -Path ".\.dockerignore" -Force
+          }
 
       - name: 6. Launch Container in Docker Desktop
         run: |
