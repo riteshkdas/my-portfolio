@@ -38,12 +38,11 @@ jobs:
           }
           exit 0
 
-      # FIXED: Changed build context context from "." to "src"
+      # FIXED: Added the --ignore-file flag to use your .dockerignore from the src folder
       - name: 5. Compile Fresh Production Docker Image
         run: |
-          docker build -t portfolio-prod:latest ./src
+          docker build --ignore-file src/.dockerignore -t portfolio-prod:latest .
 
-      # FIXED: Linked your build run directly to the compiled engine context
       - name: 6. Launch Container in Docker Desktop
         run: |
           docker run -d --name portfolio-app -p 3000:3000 --restart always portfolio-prod:latest
