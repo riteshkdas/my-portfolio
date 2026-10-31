@@ -27,7 +27,6 @@ jobs:
         run: |
           try {
               $ErrorActionPreference = "Stop"
-              # Check if container exists first to avoid throwing exceptions
               if (docker ps -a --format '{{.Names}}' | Select-String -Pattern "^portfolio-app$") {
                   docker stop portfolio-app
                   docker rm portfolio-app
@@ -39,9 +38,10 @@ jobs:
           }
           exit 0
 
+      # NOTE: Added -f src/Dockerfile to point to the correct subfolder
       - name: 5. Compile Fresh Production Docker Image
         run: |
-          docker build -t portfolio-prod:latest .
+          docker build -f src/Dockerfile -t portfolio-prod:latest .
 
       - name: 6. Launch Container in Docker Desktop
         run: |
