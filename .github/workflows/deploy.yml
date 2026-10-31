@@ -25,9 +25,19 @@ jobs:
 
       - name: 4. Tear Down Stale Container
         run: |
-          $ErrorActionPreference = "SilentlyContinue"
-          docker stop portfolio-app
-          docker rm portfolio-app
+          try {
+              $ErrorActionPreference = "Stop"
+              # Check if container exists first to avoid throwing exceptions
+              if (docker ps -a --format '{{.Names}}' | Select-String -Pattern "^portfolio-app$") {
+                  docker stop portfolio-app
+                  docker rm portfolio-app
+              } else {
+                  Write-Output "portfolio-app container does not exist. Safe to proceed."
+              }
+          } catch {
+              Write-Output "Silently handling fallback: $_"
+          }
+          exit 0
 
       - name: 5. Compile Fresh Production Docker Image
         run: |
